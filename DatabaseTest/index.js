@@ -27,10 +27,12 @@ module.exports = function (context, myTimer) {
     });
 
     function getUsername() {
-        request = new Request("select password from users", function(err) {
+        request = new Request("select username from users where userid = @id", function(err) {
             if (err) {
                 context.log(err);}
         });
+
+        request.addParameter('id', TYPES.Int, 1);
 
         request.on('row', function(columns) {
             _currentData.Username = columns[0].value;
@@ -40,7 +42,7 @@ module.exports = function (context, myTimer) {
         request.on('requestCompleted', function () {
             context.res = {
                 status: 200,
-                body: "Password: " + (_currentData.Username) 
+                body: "Username: " + (_currentData.Username) 
             };
             context.done();
         });
