@@ -9,8 +9,8 @@ module.exports = function (context, myTimer) {
         authentication: {
             type: 'default',
             options: {
-                userName: 'jc02rbt',
-                password: 'an1hG8K!55w'
+                userName: process.env["DB_USER"],
+                password: process.env["DB_PASSWORD"]
             }
         },
         options: {
