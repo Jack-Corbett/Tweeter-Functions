@@ -1,23 +1,17 @@
 var Connection = require('tedious').Connection;
 var Request = require('tedious').Request
 var TYPES = require('tedious').TYPES;
+var config = require('../helper').config;
 
-module.exports = function (context, myTimer) {
-    var _currentData = {};
-    var config = {
-        server: 'tweeter-data.database.windows.net',
-        authentication: {
-            type: 'default',
-            options: {
-                userName: process.env["DB_USER"],
-                password: process.env["DB_PASSWORD"]
-            }
-        },
-        options: {
-            database: 'tweeter',
-            encrypt: true
-        }
-    };
+module.exports = function (context, req) {
+    var userid = req.query.id;
+    if (!userid) {
+        context.log("No id provided");
+        context.done;
+    }
+
+    var currentData = {};
+    
     var connection = new Connection(config);
     connection.on('connect', function(err) {
         if (err) {
@@ -32,17 +26,17 @@ module.exports = function (context, myTimer) {
                 context.log(err);}
         });
 
-        request.addParameter('id', TYPES.Int, 1);
+        request.addParameter('id', TYPES.Int, userid);
 
         request.on('row', function(columns) {
-            _currentData.Username = columns[0].value;
-            context.log(_currentData);
+            currentData.Username = columns[0].value;
+            context.log(currentData);
         });
 
         request.on('requestCompleted', function () {
             context.res = {
                 status: 200,
-                body: "Username: " + (_currentData.Username) 
+                body: "Username: " + (currentData.Username) 
             };
             context.done();
         });
