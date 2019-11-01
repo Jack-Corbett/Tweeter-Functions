@@ -15,18 +15,12 @@ module.exports = function (context, req) {
         if (err) {
             context.log(err);}
         context.log("Connected to the database");
-        getTimeline();
+        getFollowing();
     });
 
-    function getTimeline() {
-        request = new Request("SELECT u.username, p.content, p.time FROM following f \
-            INNER JOIN posts p ON f.followingid = @id AND f.followedid = p.userid \
-            INNER JOIN users u ON p.userid = u.userid \
-            UNION \
-            SELECT u.username, p.content, p.time FROM posts p \
-            INNER JOIN users u ON p.userid = u.userid \
-            WHERE p.userid = @id \
-            ORDER BY p.time", function(err) {
+    function getFollowing() {
+        request = new Request("SELECT u,userid, u.username FROM following f \
+            INNER JOIN users u ON f.followedid = u.userid AND f.followingid = @id", function(err) {
             if (err) {
                 context.log(err);}
         });

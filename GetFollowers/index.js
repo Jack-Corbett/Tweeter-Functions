@@ -4,33 +4,44 @@ var TYPES = require('tedious').TYPES;
 var config = require('../helper').config;
 
 module.exports = function (context, req) {
-    var _currentData = {};
+    var userid = req.query.id;
+    if (!userid) {
+        context.log("ERROR: No user id provided in request");
+        context.done;
+    }
+    
     var connection = new Connection(config);
     connection.on('connect', function(err) {
         if (err) {
             context.log(err);}
-        context.log("Connected");
-        getUsername();
+        context.log("Connected to the database");
+        getFollowers();
     });
 
-    function getUsername() {
-        request = new Request("select username from users where userid = @id", function(err) {
+    function getFollowers() {
+        request = new Request("SELECT u.username FROM following f \
+            INNER JOIN users u ON f.followingid = u.userid AND f.followedid = @id", function(err) {
             if (err) {
                 context.log(err);}
         });
 
-        request.addParameter('id', TYPES.Int, 1);
+        request.addParameter('id', TYPES.Int, userid);
 
+        var json = [];
         request.on('row', function(columns) {
-            _currentData.Username = columns[0].value;
-            context.log(_currentData);
+            var rowData = {};
+            columns.forEach(function(column) {
+                rowData[column.metadata.colName] = column.value;
+            });
+            json.push(rowData)
         });
 
         request.on('requestCompleted', function () {
             context.res = {
                 status: 200,
-                body: "Username: " + (_currentData.Username) 
+                body: json
             };
+            context.log(json);
             context.done();
         });
         connection.execSql(request);
