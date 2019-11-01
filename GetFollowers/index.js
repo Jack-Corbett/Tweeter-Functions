@@ -4,8 +4,8 @@ var TYPES = require('tedious').TYPES;
 var config = require('../helper').config;
 
 module.exports = function (context, req) {
-    var userid = req.query.id;
-    if (!userid) {
+    var id = req.query.id;
+    if (!id) {
         context.log("ERROR: No user id provided in request");
         context.done;
     }
@@ -25,7 +25,7 @@ module.exports = function (context, req) {
                 context.log(err);}
         });
 
-        request.addParameter('id', TYPES.Int, userid);
+        request.addParameter('id', TYPES.Int, id);
 
         var json = [];
         request.on('row', function(columns) {

@@ -5,14 +5,14 @@ var config = require('../helper').config;
 
 module.exports = function (context, req) {
     var id = req.body.id;
-    var content = req.body.content;
+    var followed = req.body.followed;
 
     if (!id) {
-        context.log("ERROR: No user id provided in request");
+        context.log("ERROR: No user id provided in the request");
         context.done;
     }
-    if (!content) {
-        context.log("ERROR: No post content provided in the request");
+    if (!followed) {
+        context.log("ERROR: No user id provided in the request to unfollow");
         context.done;
     }
     
@@ -21,17 +21,17 @@ module.exports = function (context, req) {
         if (err) {
             context.log(err);}
         context.log("Connected to the database");
-        createPost();
+        unfollowUser();
     });
 
-    function createPost() {
-        request = new Request("INSERT INTO posts (userid, content, time) VALUES (@id, @content, CURRENT_TIMESTAMP)", function(err) {
+    function unfollowUser() {
+        request = new Request("DELETE FROM following WHERE followingid = @id AND followedid = @followed", function(err) {
             if (err) {
                 context.log(err);}
         });
 
         request.addParameter('id', TYPES.Int, id);
-        request.addParameter('content', TYPES.NVarChar, content);
+        request.addParameter('followed', TYPES.Int, followed);
 
         connection.execSql(request);
     };
