@@ -33,6 +33,11 @@ module.exports = function (context, req) {
         request.addParameter('id', TYPES.Int, id);
         request.addParameter('followed', TYPES.Int, followed);
 
+        request.on('requestCompleted', function () {
+            context.log("Successfully unfollowed the user");
+            context.done();
+        });
+
         connection.execSql(request);
     };
 };

@@ -33,6 +33,11 @@ module.exports = function (context, req) {
         request.addParameter('id', TYPES.Int, id);
         request.addParameter('username', TYPES.NVarChar, username);
 
+        request.on('requestCompleted', function () {
+            context.log("Successfully followed the user");
+            context.done();
+        });
+
         connection.execSql(request);
     };
 };

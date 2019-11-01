@@ -33,6 +33,11 @@ module.exports = function (context, req) {
         request.addParameter('id', TYPES.Int, id);
         request.addParameter('content', TYPES.NVarChar, content);
 
+        request.on('requestCompleted', function () {
+            context.log("Added post to the database");
+            context.done();
+        });
+
         connection.execSql(request);
     };
 };
