@@ -19,7 +19,7 @@ module.exports = function (context, req) {
     });
 
     function getFollowers() {
-        request = new Request("SELECT u.username FROM following f \
+        request = new Request("SELECT u.userid, u.username FROM following f \
             INNER JOIN users u ON f.followingid = u.userid AND f.followedid = @id", function(err) {
             if (err) {
                 context.log(err);}

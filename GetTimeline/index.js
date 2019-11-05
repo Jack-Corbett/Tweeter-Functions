@@ -19,7 +19,7 @@ module.exports = function (context, req) {
     });
 
     function getTimeline() {
-        request = new Request("SELECT u.username, p.content, p.time FROM following f \
+        request = new Request("SELECT p.id, u.username, p.content, p.time FROM following f \
             INNER JOIN posts p ON f.followingid = @id AND f.followedid = p.userid \
             INNER JOIN users u ON p.userid = u.userid \
             UNION \
