@@ -9,11 +9,11 @@ module.exports = function (context, req) {
 
     if (!id) {
         context.log("ERROR: No user id provided in the request");
-        context.done;
+        context.done();
     }
     if (!username) {
         context.log("ERROR: No username provided in the request to follow");
-        context.done;
+        context.done();
     }
     
     var connection = new Connection(config);

@@ -9,17 +9,19 @@ module.exports = function (context, req) {
 
     if (!id) {
         context.log("ERROR: No user id provided in request");
-        context.done;
+        error();
     }
     if (!content) {
         context.log("ERROR: No post content provided in the request");
-        context.done;
+        error();
     }
     
     var connection = new Connection(config);
     connection.on('connect', function(err) {
         if (err) {
-            context.log(err);}
+            context.log(err);
+            error();
+        }
         context.log("Connected to the database");
         createPost();
     });
@@ -27,17 +29,24 @@ module.exports = function (context, req) {
     function createPost() {
         request = new Request("INSERT INTO posts (userid, content, time) VALUES (@id, @content, CURRENT_TIMESTAMP)", function(err) {
             if (err) {
-                context.log(err);}
+                context.log(err);
+                error();
+            } else {
+                context.log("Added post to the database");
+                context.done();
+            }
         });
 
         request.addParameter('id', TYPES.Int, id);
         request.addParameter('content', TYPES.NVarChar, content);
-
-        request.on('requestCompleted', function () {
-            context.log("Added post to the database");
-            context.done();
-        });
-
         connection.execSql(request);
+    };
+
+    function error() {
+        context.res = {
+            status: 500,
+            body: "Failed to publish post"
+        }
+        context.done();
     };
 };

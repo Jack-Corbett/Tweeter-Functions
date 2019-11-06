@@ -39,7 +39,7 @@ module.exports = function (context, req) {
             columns.forEach(function(column) {
                 rowData[column.metadata.colName] = column.value;
             });
-            json.push(rowData)
+            json.push(rowData);
         });
 
         request.on('requestCompleted', function () {
