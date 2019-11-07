@@ -1,7 +1,7 @@
 var Connection = require('tedious').Connection;
 var Request = require('tedious').Request
 var TYPES = require('tedious').TYPES;
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 var config = require('../helper').config;
 
 module.exports = function (context, req) {

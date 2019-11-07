@@ -1,7 +1,7 @@
 var Connection = require('tedious').Connection;
 var Request = require('tedious').Request
 var TYPES = require('tedious').TYPES;
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 var config = require('../helper').config;
 
 module.exports = function (context, req) {
@@ -28,7 +28,7 @@ module.exports = function (context, req) {
     });
 
     function register() {
-        bcrypt.hash(password, 10, function(err, hash) {
+        bcrypt.hash(password, 8, function(err, hash) {
             if (err) {
                 context.log(err);
                 error();
