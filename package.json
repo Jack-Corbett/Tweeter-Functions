@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Written for COMP3207",
   "dependencies": {
-    "bcrypt": "^3.0.6",
+    "bcryptjs": "^2.4.3",
     "tedious": "6.4.0"
   }
 }
