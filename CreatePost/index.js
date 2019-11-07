@@ -44,8 +44,7 @@ module.exports = function (context, req) {
 
     function error() {
         context.res = {
-            status: 500,
-            body: "Failed to publish post"
+            status: 500
         }
         context.done();
     };

@@ -7,13 +7,15 @@ module.exports = function (context, req) {
     var id = req.query.id;
     if (!id) {
         context.log("ERROR: No user id provided in request");
-        context.done;
+        error();
     }
     
     var connection = new Connection(config);
     connection.on('connect', function(err) {
         if (err) {
-            context.log(err);}
+            context.log(err);
+            error();
+        }
         context.log("Connected to the database");
         getFollowers();
     });
@@ -22,7 +24,9 @@ module.exports = function (context, req) {
         request = new Request("SELECT u.userid, u.username FROM following f \
             INNER JOIN users u ON f.followingid = u.userid AND f.followedid = @id", function(err) {
             if (err) {
-                context.log(err);}
+                context.log(err);
+                error();
+            }
         });
 
         request.addParameter('id', TYPES.Int, id);
@@ -48,5 +52,12 @@ module.exports = function (context, req) {
             context.done();
         });
         connection.execSql(request);
+    };
+
+    function error() {
+        context.res = {
+            status: 500
+        }
+        context.done();
     };
 };

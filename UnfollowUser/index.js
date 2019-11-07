@@ -9,17 +9,19 @@ module.exports = function (context, req) {
 
     if (!id) {
         context.log("ERROR: No user id provided in the request");
-        context.done;
+        error();
     }
     if (!followed) {
         context.log("ERROR: No user id provided in the request to unfollow");
-        context.done;
+        error();
     }
     
     var connection = new Connection(config);
     connection.on('connect', function(err) {
         if (err) {
-            context.log(err);}
+            context.log(err);
+            error();
+        }
         context.log("Connected to the database");
         unfollowUser();
     });
@@ -27,7 +29,9 @@ module.exports = function (context, req) {
     function unfollowUser() {
         request = new Request("DELETE FROM following WHERE followingid = @id AND followedid = @followed", function(err) {
             if (err) {
-                context.log(err);}
+                context.log(err);
+                error();
+            }
         });
 
         request.addParameter('id', TYPES.Int, id);
@@ -39,5 +43,12 @@ module.exports = function (context, req) {
         });
 
         connection.execSql(request);
+    };
+
+    function error() {
+        context.res = {
+            status: 500
+        }
+        context.done();
     };
 };
