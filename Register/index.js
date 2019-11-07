@@ -52,8 +52,7 @@ module.exports = function (context, req) {
 
     function error() {
         context.res = {
-            status: 500,
-            body: "Failed to register"
+            status: 500
         }
         context.done();
     };

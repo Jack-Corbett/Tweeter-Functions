@@ -9,6 +9,7 @@ exports.config = {
     },
     options: {
         database: 'tweeter',
-        encrypt: true
+        encrypt: true,
+        rowCollectionOnRequestCompletion: true
     }
 };

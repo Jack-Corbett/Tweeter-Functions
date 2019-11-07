@@ -36,20 +36,22 @@ module.exports = function (context, req) {
                 context.log("No user found");
                 error();
             } else {
+                context.log("Comparing hash to submitted password");
                 bcrypt.compare(password, rows[0][1].value, function (err, isValid) {
                     if (err) {
                         context.log(err);
                         error();
                     } else if (!isValid) {
-                        context.log("Password incorrent")
-                        error()
+                        context.log("Password incorrect")
+                        error();
                     } else {
+                        context.log("Login successful")
                         context.res = {
                             status: 200,
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: "{ userid: " + rows[0][0].value + " }"
+                            body: '{ "userid": ' + rows[0][0].value + ' }'
                         };
                         context.done();
                     }
@@ -63,8 +65,7 @@ module.exports = function (context, req) {
 
     function error() {
         context.res = {
-            status: 401,
-            body: "Failed to login"
+            status: 401
         }
         context.done();
     }
