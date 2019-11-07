@@ -27,7 +27,7 @@ module.exports = function (context, req) {
     });
 
     function followUser() {
-        request = new Request("INSERT INTO following SELECT @id, userid FROM users WHERE username = @username", function(err) {
+        request = new Request("INSERT INTO following VALUES (@id, (SELECT userid FROM users WHERE username = @username))", function(err) {
             if (err) {
                 context.log(err);
                 error();
